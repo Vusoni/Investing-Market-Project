@@ -11,8 +11,11 @@ import {signUpWithEmail} from "@/lib/actions/auth.actions";
 import {useRouter} from "next/navigation";
 import {toast} from "sonner";
 
+// SignUp Page
 const SignUp = () => {
-    const router = useRouter()
+    const router = useRouter() // router 
+
+    // Destructuring data
     const {
         register,
         handleSubmit,
@@ -47,6 +50,7 @@ const SignUp = () => {
         <>
             <h1 className="form-title">Sign Up & Personalize</h1>
 
+            {/* Creating Form List with Country List */}
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <InputField
                     name="fullName"
@@ -76,6 +80,7 @@ const SignUp = () => {
                     validation={{ required: 'Password is required', minLength: 8 }}
                 />
 
+                {/* Country Selector */}
                 <CountrySelectField
                     name="country"
                     label="Country"

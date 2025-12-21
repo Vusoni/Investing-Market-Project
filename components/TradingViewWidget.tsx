@@ -1,9 +1,11 @@
+// Client side component - TradingView Widgets 
 'use client';
 
 import React, { memo } from 'react';
 import useTradingViewWidget from "@/hooks/useTradingViewWidget";
 import {cn} from "@/lib/utils";
 
+// Props in order to make TypeScript happy :) 
 interface TradingViewWidgetProps {
     title?: string;
     scriptUrl: string;
@@ -12,6 +14,7 @@ interface TradingViewWidgetProps {
     className?: string;
 }
 
+// Trading View Widgets Component 
 const TradingViewWidget = ({ title, scriptUrl, config, height = 600, className }: TradingViewWidgetProps) => {
     const containerRef = useTradingViewWidget(scriptUrl, config, height);
 
