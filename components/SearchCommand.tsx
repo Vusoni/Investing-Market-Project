@@ -8,12 +8,17 @@ import Link from "next/link";
 import {searchStocks} from "@/lib/actions/finnhub.actions";
 import {useDebounce} from "@/hooks/useDebounce";
 
+// Search functionality
+// Specify Props in order to return a type of Stock
 export default function SearchCommand({ renderAs = 'button', label = 'Add stock', initialStocks }: SearchCommandProps) {
+
+  // Keep track of some states 
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [loading, setLoading] = useState(false)
   const [stocks, setStocks] = useState<StockWithWatchlistStatus[]>(initialStocks);
 
+  // Trim & Slice 
   const isSearchMode = !!searchTerm.trim();
   const displayStocks = isSearchMode ? stocks : stocks?.slice(0, 10);
 
@@ -42,12 +47,15 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
     }
   }
 
+  // Debounce to prevent fetching every single time when user type something
   const debouncedSearch = useDebounce(handleSearch, 300);
 
+  // useEffect for debouncing logic after search text is changing
   useEffect(() => {
     debouncedSearch();
   }, [searchTerm]);
 
+  // Select stock -> Reset states 
   const handleSelectStock = () => {
     setOpen(false);
     setSearchTerm("");
@@ -65,6 +73,9 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
             {label}
           </Button>
       )}
+
+
+      {/* Style the Command Dialog - Using the globals.css variables */}
       <CommandDialog open={open} onOpenChange={setOpen} className="search-dialog">
         <div className="search-field">
           <CommandInput value={searchTerm} onValueChange={setSearchTerm} placeholder="Search stocks..." className="search-input" />
@@ -83,13 +94,18 @@ export default function SearchCommand({ renderAs = 'button', label = 'Add stock'
                 {isSearchMode ? 'Search results' : 'Popular stocks'}
                 {` `}({displayStocks?.length || 0})
               </div>
+
+
+              {/* Display Stocks Logic */}
               {displayStocks?.map((stock, i) => (
                   <li key={stock.symbol} className="search-item">
-                    <Link
+                    <Link // Link for every single stock
                         href={`/stocks/${stock.symbol}`}
                         onClick={handleSelectStock}
                         className="search-item-link"
                     >
+
+                      {/* Trending Up Icon */}
                       <TrendingUp className="h-4 w-4 text-gray-500" />
                       <div  className="flex-1">
                         <div className="search-item-name">

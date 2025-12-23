@@ -63,13 +63,13 @@ export const sendDailyNewsSummary = inngest.createFunction(
   { id: "daily-news-summary" },
   [{ event: "app/send.daily.news" }, { cron: "0 12 * * *" }],
   async ({ step }) => {
-    // Step #1: Get all users for news delivery
+    //TODO Getting users for news delivery
     const users = await step.run("get-all-users", getAllUsersForNewsEmail);
 
     if (!users || users.length === 0)
       return { success: false, message: "No users found for news email" };
 
-    // Step #2: For each user, get watchlist symbols -> fetch news (fallback to general)
+    //TODO Fetching personalized news for each one of the user - Setup new model in database
     const results = await step.run("fetch-user-news", async () => {
       const perUser: Array<{
         user: UserForNewsEmail;
@@ -95,7 +95,7 @@ export const sendDailyNewsSummary = inngest.createFunction(
       return perUser;
     });
 
-    // Step #3: (placeholder) Summarize news via AI
+    //TODO Summarize news via AI for each user
     const userNewsSummaries: {
       user: UserForNewsEmail;
       newsContent: string | null;
@@ -103,11 +103,13 @@ export const sendDailyNewsSummary = inngest.createFunction(
 
     for (const { user, articles } of results) {
       try {
+        // Define a prompt
         const prompt = NEWS_SUMMARY_EMAIL_PROMPT.replace(
           "{{newsData}}",
           JSON.stringify(articles, null, 2)
         );
 
+        // Response
         const response = await step.ai.infer(`summarize-news-${user.email}`, {
           model: step.ai.models.gemini({ model: "gemini-2.5-flash-lite" }),
           body: {
@@ -115,6 +117,7 @@ export const sendDailyNewsSummary = inngest.createFunction(
           },
         });
 
+        // Part response
         const part = response.candidates?.[0]?.content?.parts?.[0];
         const newsContent =
           (part && "text" in part ? part.text : null) || "No market news.";
@@ -122,11 +125,11 @@ export const sendDailyNewsSummary = inngest.createFunction(
         userNewsSummaries.push({ user, newsContent });
       } catch (e) {
         console.error("Failed to summarize news for : ", user.email);
-        userNewsSummaries.push({ user, newsContent: null });
+        userNewsSummaries.push({ user, newsContent: null }); // Push the user as the content
       }
     }
 
-    // Step #4: (placeholder) Send the emails
+    //TODO Send Emails to Users
     await step.run("send-news-emails", async () => {
       await Promise.all(
         userNewsSummaries.map(async ({ user, newsContent }) => {

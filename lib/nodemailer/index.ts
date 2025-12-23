@@ -15,7 +15,6 @@ export const transporter = nodemailer.createTransport({
 });
 
 //! EMAIL TEMPLATES
-
 export const sendWelcomeEmail = async ({
   email,
   name,
@@ -37,6 +36,7 @@ export const sendWelcomeEmail = async ({
   await transporter.sendMail(mailOptions);
 };
 
+// Email summary
 export const sendNewsSummaryEmail = async ({
   email,
   date,

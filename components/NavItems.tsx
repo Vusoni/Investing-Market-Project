@@ -20,9 +20,9 @@ const NavItems = ({initialStocks}: { initialStocks: StockWithWatchlistStatus[]})
             {NAV_ITEMS.map(({ href, label }) => { // Map over items and for each render searchCommand component
                 if(href === '/search') return (
                     <li key="search-trigger">
-                        <SearchCommand
-                            renderAs="text"
-                            label="Search"
+                        <SearchCommand // Search Command comes from shadcnUI 
+                            renderAs="text" 
+                            label="Search" 
                             initialStocks={initialStocks}
                         />
                     </li>
@@ -32,7 +32,7 @@ const NavItems = ({initialStocks}: { initialStocks: StockWithWatchlistStatus[]})
                     <Link href={href} className={`hover:text-yellow-500 transition-colors ${
                         isActive(href) ? 'text-gray-100' : ''
                     }`}>
-                        {label}
+                        {label} 
                     </Link>
                 </li>
             })}
